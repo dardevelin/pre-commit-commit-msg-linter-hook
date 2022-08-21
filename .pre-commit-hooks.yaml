@@ -1,0 +1,7 @@
+-   id: commit-msg-linter-hook
+    name: commit-msg-linter-hook
+    description: Checks if commit message matches the template commit rules
+    entry: commit-msg-linter-hook
+    language: python
+    types: [text]
+  
