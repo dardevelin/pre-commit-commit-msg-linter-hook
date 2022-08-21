@@ -398,9 +398,5 @@ def main():
     
     return lint_commit_message(msg)
 
-
-def main():
-    print("commit-msg hook was called")
-
 if __name__ == '__main__':
     sys.exit(main())
