@@ -3,7 +3,13 @@
 import sys
 import textwrap
 from enum import Enum
-from typing import List
+from typing import List, Final
+import argparse
+
+###############################################################################
+#                             CONSTANTS                                       #
+###############################################################################
+COMMIT_EDITMSG: Final[str] = ".git/COMMIT_EDITMSG"
 
 ###############################################################################
 #                              CONSOLE UTILITIES                              #
@@ -201,9 +207,10 @@ def title_has_issue_number(commit_message: List[str]) -> tuple:
 ###############################################################################
 #                                LINTER                                       #
 ###############################################################################
-def lint_commit_message():
+def lint_commit_message(commit_message: List[str]=None):
     """The main function of the commit-msg hook."""
-    commit_message = get_commit_message(sys.argv[1], keep_comments=False)
+    if commit_message is None:
+        commit_message = get_commit_message(sys.argv[1], keep_comments=False)
 
     flag, hint = has_title_and_body(commit_message)
     if not flag:
@@ -371,10 +378,29 @@ def lint_commit_message():
 
     return 0
 
+###############################################################################
+#                                MAIN                                         #
+###############################################################################
+def main():
+    """
+    Perform validations of the commit message.
+    Extract arguments from command line and run the hook logic
+    """
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", nargs="?", type=str, default=COMMIT_EDITMSG,
+                        help="the path of commit message file")
+    args = parser.parse_args()
+    msg = get_commit_message(args.path, keep_comments=False)
+    if not msg.strip():
+        print(linter_message("Commit Message is empty", Level.ERROR))
+        sys.exit(1)
+    
+    return lint_commit_message(msg)
+
 
 def main():
     print("commit-msg hook was called")
 
 if __name__ == '__main__':
-    main = lint_commit_message
     sys.exit(main())
