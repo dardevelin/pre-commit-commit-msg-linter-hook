@@ -392,7 +392,7 @@ def main():
                         help="the path of commit message file")
     args = parser.parse_args()
     msg = get_commit_message(args.path, keep_comments=False)
-    if not msg.strip():
+    if not msg or len(msg) == 0:
         print(linter_message("Commit Message is empty", Level.ERROR))
         sys.exit(1)
     
